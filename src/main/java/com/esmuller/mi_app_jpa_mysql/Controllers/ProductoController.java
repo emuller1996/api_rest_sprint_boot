@@ -2,6 +2,7 @@
 package com.esmuller.mi_app_jpa_mysql.controllers;
 
 import com.esmuller.mi_app_jpa_mysql.dtos.CrearProductoRequest;
+import com.esmuller.mi_app_jpa_mysql.dtos.PageResponseDTO;
 import com.esmuller.mi_app_jpa_mysql.dtos.ProductoDTO;
 import com.esmuller.mi_app_jpa_mysql.services.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,23 @@ public class ProductoController {
     @Autowired
     private ProductoService productoService;
 
-    // Obtener todos los productos
+
+
     @GetMapping
+    public PageResponseDTO<ProductoDTO> getAllProductos(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        
+        return productoService.findAll(page, size, sortBy, sortDir);
+    }
+
+    // Obtener todos los productos
+    /* @GetMapping
     public List<ProductoDTO> getAllProductos() {
         return productoService.findAll();
-    }
+    } */
 
     // Obtener producto por ID
     @GetMapping("/{id}")

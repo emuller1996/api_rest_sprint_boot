@@ -1,14 +1,20 @@
 package com.esmuller.mi_app_jpa_mysql.services;
 
 import com.esmuller.mi_app_jpa_mysql.dtos.CrearProductoRequest;
+import com.esmuller.mi_app_jpa_mysql.dtos.PageResponseDTO;
 import com.esmuller.mi_app_jpa_mysql.dtos.ProductoDTO;
 import com.esmuller.mi_app_jpa_mysql.entities.Categoria;
 import com.esmuller.mi_app_jpa_mysql.entities.Producto;
 import com.esmuller.mi_app_jpa_mysql.repositories.CategoriaRepository;
 import com.esmuller.mi_app_jpa_mysql.repositories.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +28,41 @@ public class ProductoService {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
+
+
+
+    // ==========================================
+    // 1. OBTENER TODOS LOS PRODUCTOS CON PAGINACIÓN
+    // ==========================================
+    public PageResponseDTO<ProductoDTO> findAll(int page, int size, String sortBy, String sortDir) {
+        // Crear objeto Pageable con ordenamiento
+        Sort sort = sortDir.equalsIgnoreCase("asc") 
+                    ? Sort.by(sortBy).ascending() 
+                    : Sort.by(sortBy).descending();
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        
+        // Obtener página de la base de datos
+        Page<Producto> pageResult = productoRepository.findAll(pageable);
+        
+        // Convertir a DTOs
+        List<ProductoDTO> productosDTO = pageResult.getContent()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        
+        // Crear respuesta paginada
+        return new PageResponseDTO<>(
+            productosDTO,
+            pageResult.getNumber(),
+            pageResult.getSize(),
+            pageResult.getTotalElements(),
+            pageResult.getTotalPages(),
+            pageResult.isFirst(),
+            pageResult.isLast(),
+            pageResult.isEmpty()
+        );
+    }
 
     // Obtener todos los productos
     public List<ProductoDTO> findAll() {
