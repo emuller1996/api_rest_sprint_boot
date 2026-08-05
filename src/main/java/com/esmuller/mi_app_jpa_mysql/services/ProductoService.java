@@ -34,7 +34,13 @@ public class ProductoService {
     // ==========================================
     // 1. OBTENER TODOS LOS PRODUCTOS CON PAGINACIÓN
     // ==========================================
-    public PageResponseDTO<ProductoDTO> findAll(int page, int size, String sortBy, String sortDir) {
+    public PageResponseDTO<ProductoDTO> findAll(
+            String nombre,        // ← NUEVO PARÁMETRO
+            int page, 
+            int size, 
+            String sortBy, 
+            String sortDir) {
+        
         // Crear objeto Pageable con ordenamiento
         Sort sort = sortDir.equalsIgnoreCase("asc") 
                     ? Sort.by(sortBy).ascending() 
@@ -42,8 +48,16 @@ public class ProductoService {
         
         Pageable pageable = PageRequest.of(page, size, sort);
         
-        // Obtener página de la base de datos
-        Page<Producto> pageResult = productoRepository.findAll(pageable);
+        // Obtener página de la base de datos (CON o SIN filtro)
+        Page<Producto> pageResult;
+        
+        if (nombre != null && !nombre.trim().isEmpty()) {
+            // Si hay término de búsqueda, filtrar por nombre
+            pageResult = productoRepository.findByNombreContaining(nombre, pageable);
+        } else {
+            // Si no hay búsqueda, obtener todos
+            pageResult = productoRepository.findAll(pageable);
+        }
         
         // Convertir a DTOs
         List<ProductoDTO> productosDTO = pageResult.getContent()

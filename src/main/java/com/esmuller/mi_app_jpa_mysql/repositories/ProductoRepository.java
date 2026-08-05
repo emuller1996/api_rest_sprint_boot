@@ -15,8 +15,7 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
     // Buscar productos por nombre (con paginación)
     Page<Producto> findByNombreContaining(String nombre, Pageable pageable);
-    
-    
+
     // Buscar productos por nombre (contiene)
     List<Producto> findByNombreContaining(String nombre);
     

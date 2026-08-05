@@ -23,12 +23,13 @@ public class ProductoController {
 
     @GetMapping
     public PageResponseDTO<ProductoDTO> getAllProductos(
+            @RequestParam(required = false) String nombre,  // ← NUEVO PARÁMETRO OPCIONAL
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "id") String sortBy,
             @RequestParam(defaultValue = "asc") String sortDir) {
-        
-        return productoService.findAll(page, size, sortBy, sortDir);
+        // Pasar el parámetro de búsqueda al servicio
+        return productoService.findAll(nombre, page, size, sortBy, sortDir);
     }
 
     // Obtener todos los productos

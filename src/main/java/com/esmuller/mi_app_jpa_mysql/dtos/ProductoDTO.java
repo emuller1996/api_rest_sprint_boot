@@ -34,8 +34,8 @@ public class ProductoDTO {
     public Integer getStock() { return stock; }
     public void setStock(Integer stock) { this.stock = stock; }
 
-    //public Long getCategoriaId() { return categoriaId; }
-    //public void setCategoriaId(Long categoriaId) { this.categoriaId = categoriaId; }
+    public Long getCategoriaId() { return categoriaId; }
+    public void setCategoriaId(Long categoriaId) { this.categoriaId = categoriaId; }
 
     public String getCategoria() { return categoria; }
     public void setCategoria(String categoria) { this.categoria = categoria; }
