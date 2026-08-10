@@ -9,6 +9,8 @@ interface UseClientesReturn {
   error: string | null;
   refreshClientes: () => Promise<void>;
   createCliente: (data: ClientetFormData) => Promise<ClienteCreateResponse>;
+  getCliente: (id: number) => Promise<Cliente>;
+  updateCliente: (id: number, cliente:ClientetFormData) => Promise<ClienteCreateResponse>; 
 }
 
 export const useClientes = (): UseClientesReturn => {
@@ -51,11 +53,34 @@ export const useClientes = (): UseClientesReturn => {
     [fetchClientes],
   );
 
+const getCliente = useCallback(async (id: number): Promise<Cliente> => {
+    try {
+      return await clienteService.getClienteById(id);
+    } catch (err) {
+      console.error(`Error getting product ${id}:`, err);
+      throw err;
+    }
+  }, []);
+
+  const updateCliente = useCallback(async (id: number, data: ClientetFormData): Promise<ClienteCreateResponse> => {
+      try {
+        const updatedProduct = await clienteService.updateCliente(id, data);
+        await fetchClientes();
+        return updatedProduct;
+      } catch (err) {
+        console.error(`Error updating product ${id}:`, err);
+        throw err;
+      }
+    }, [fetchClientes]);
+
+
   return {
     clientes,
     loading,
     error,
     refreshClientes: fetchClientes,
     createCliente,
+    getCliente,
+    updateCliente
   };
 };

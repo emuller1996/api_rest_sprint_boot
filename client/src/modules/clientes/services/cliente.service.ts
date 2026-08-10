@@ -14,7 +14,9 @@ class ClienteService {
     }
   }
 
-  async createCliente(cliente: Partial<Cliente>): Promise<ClienteCreateResponse> {
+  async createCliente(
+    cliente: Partial<Cliente>,
+  ): Promise<ClienteCreateResponse> {
     try {
       const response = await axiosInstance.post<ClienteCreateResponse>(
         this.baseUrl,
@@ -26,6 +28,31 @@ class ClienteService {
       throw error;
     }
   }
+
+
+  async getClienteById(id: number): Promise<Cliente> {
+    try {
+      const response = await axiosInstance.get<Cliente>(
+        `${this.baseUrl}/${id}`,
+      );
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching Cliente ${id}:`, error);
+      throw error;
+    }
+  }
+
+
+  // Actualizar producto
+    async updateCliente(id: number, cliente: Partial<Cliente>): Promise<ClienteCreateResponse> {
+      try {
+        const response = await axiosInstance.put<ClienteCreateResponse>(`${this.baseUrl}/${id}`, cliente);
+        return response.data;
+      } catch (error) {
+        console.error(`Error updating cliente ${id}:`, error);
+        throw error;
+      }
+    }
 }
 
 export const clienteService = new ClienteService();

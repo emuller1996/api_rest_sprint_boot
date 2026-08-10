@@ -6,7 +6,7 @@ import {
 } from "../../../schemas/cliente.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useClientes } from "../../../hooks/useClientes";
+import { useEffect } from "react";
 
 interface FormClienteProps {
   isOpen: boolean;
@@ -32,6 +32,11 @@ export default function FormCliente({
     watch,
   } = useForm<ClientetFormData>({
     resolver: zodResolver(clienteSchema),
+    defaultValues: {
+      nombre: "",
+      direccion:"",
+      telefono:"",
+    },
   });
 
   const handleFormSubmit = async (data: ClientetFormData) => {
@@ -44,7 +49,16 @@ export default function FormCliente({
     }
   };
 
-  const { createCliente } =  useClientes()
+  useEffect(() => {
+      if (cliente) {
+        setValue("nombre", cliente.nombre);
+        setValue("direccion", cliente?.direccion);
+        setValue("telefono", cliente?.telefono);
+      } else {
+        reset();
+      }
+    }, [cliente, setValue, reset]);
+
 
   return (
     <Modal

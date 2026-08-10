@@ -8,7 +8,7 @@ import CardCliente from "./components/CardCliente";
 import { toast } from "react-toastify";
 
 export default function ClientePage() {
-  const { clientes, loading, createCliente } = useClientes();
+  const { clientes, loading, createCliente,getCliente, updateCliente } = useClientes();
 
   const [searchTerm, setSearchTerm] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
@@ -22,7 +22,8 @@ export default function ClientePage() {
     try {
       if (selectedCliente) {
         // Actualizar
-        //await updateProduct(selectedProduct.id, data);
+        const result =  await updateCliente(selectedCliente.id, data);
+        toast.success(result.message)
       } else {
         // Crear
         const result = await createCliente(data);
@@ -33,6 +34,20 @@ export default function ClientePage() {
     } catch (error) {
       console.error("Error al guardar producto:", error);
       throw error;
+    }
+  };
+
+
+  const handleEdit = async (id: number) => {
+    try {
+      setLoadingAction(true);
+      const client = await getCliente(id);
+      setSelectedCliente(client);
+      setModalOpen(true);
+    } catch (error) {
+      console.error("Error al cargar cliente:", error);
+    } finally {
+      setLoadingAction(false);
     }
   };
 
@@ -86,7 +101,7 @@ export default function ClientePage() {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {clientes &&
           clientes.map((clie: Cliente) => (
-            <CardCliente key={clie.id}  cliente={clie}  />
+            <CardCliente key={clie.id}  cliente={clie}  handleEdit={handleEdit}  />
           ))}
       </div>
 
