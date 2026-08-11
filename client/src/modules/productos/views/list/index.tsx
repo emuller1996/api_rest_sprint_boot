@@ -6,6 +6,7 @@ import { Product, ProductFilters } from "../../types/product.types";
 import { ProductFormData } from "../../schemas/product.schema";
 import FormProductos from "./components/FormProductos";
 import { useProducts } from "../../hooks/useProducts";
+import { formatPrice } from "../../../../utils";
 
 const StockIndicator = ({ stock }: { stock: number }) => {
   let color = "text-green-600";
@@ -69,14 +70,7 @@ export default function ListProductos() {
     setSearchTerm(nombre);
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("es-CO", {
-      style: "currency",
-      currency: "COP",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
+  
 
   // Abrir modal para crear
   const handleCreate = () => {
