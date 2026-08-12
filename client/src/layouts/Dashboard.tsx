@@ -18,6 +18,7 @@ import {
 } from "react-icons/hi";
 import ListProductos from "../modules/productos/views/list";
 import ClientePage from "../modules/clientes/views/list";
+import ListFacturas from "../modules/facturas/views/list";
 
 // Componente para el Sidebar Item
 const SidebarItem = ({ to, icon: Icon, label, active, onClick }: any) => (
@@ -225,11 +226,7 @@ export function Dashboard() {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/productos" element={<ListProductos />} />
               <Route path="/clientes" element={<ClientePage />} />
-              <Route path="/ventas" element={
-                <div className="bg-white rounded-xl p-6 shadow-sm">
-                  <h2 className="text-3xl font-bold text-gray-800">Ventas</h2>
-                  <p className="text-gray-500 mt-4">Sección de ventas en construcción</p>
-                </div>
+              <Route path="/ventas" element={<ListFacturas/>
               } />
             </Routes>
           </div>
