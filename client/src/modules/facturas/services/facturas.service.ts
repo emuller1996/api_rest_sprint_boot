@@ -1,5 +1,5 @@
 import axiosInstance from "../../../config/axios";
-import { FacturasFilters, FacturasResponse } from "../types/facturas.types";
+import { FacturasFilters, FacturasResponse, FacturaCreateRequest } from "../types/facturas.types";
 
 class FacturaService {
   private baseUrl = "/facturas"; // Ajusta según tu endpoint
@@ -19,6 +19,16 @@ class FacturaService {
       return response.data;
     } catch (error) {
       console.error("Error fetching facturas/ invoices:", error);
+      throw error;
+    }
+  }
+
+  async createFactura(data: FacturaCreateRequest): Promise<any> {
+    try {
+      const response = await axiosInstance.post(`${this.baseUrl}`, data);
+      return response.data;
+    } catch (error) {
+      console.error("Error creating factura:", error);
       throw error;
     }
   }

@@ -1,4 +1,5 @@
-import { HiPencil, HiTrash } from "react-icons/hi";
+import { HiPencil, HiTrash, HiPlus } from "react-icons/hi";
+import { Link } from "react-router";
 import { useFacturas } from "../../../hooks/useFacturas";
 import { formatPrice } from "../../../../utils";
 
@@ -7,10 +8,21 @@ export default function ListFacturas() {
   return (
     <div>
       <div className="rounded-xl bg-white p-4 shadow-sm">
-        <h2 className="text-3xl font-bold text-gray-800">Facturas</h2>
-        <p className="mt-4 text-gray-500">
-          Sección de ventas para ver y registrar las facturas de ventas.
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-3xl font-bold text-gray-800">Facturas</h2>
+            <p className="mt-1 text-gray-500">
+              Sección de ventas para ver y registrar las facturas de ventas.
+            </p>
+          </div>
+          <Link 
+            to="/facturas/nuevo" 
+            className="flex items-center gap-2 rounded-lg bg-orange-600 px-4 py-2 text-white transition-colors hover:bg-orange-700"
+          >
+            <HiPlus className="h-5 w-5" />
+            <span>Nueva Factura</span>
+          </Link>
+        </div>
       </div>
       <div className="mt-2 rounded-xl bg-white p-4 shadow-sm">
         <table className="w-full">
