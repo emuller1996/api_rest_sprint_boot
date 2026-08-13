@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { 
   Button, 
   Label, 
@@ -17,6 +17,7 @@ import {
   ModalBody,
   ModalFooter
 } from 'flowbite-react';
+import AsyncSelect from 'react-select/async';
 import { HiPlus, HiTrash, HiArrowLeft } from 'react-icons/hi';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
@@ -42,7 +43,7 @@ const CreateFacturaView: React.FC = () => {
   const [itemQty, setItemQty] = useState(1);
   const [itemPrice, setItemPrice] = useState(0);
 
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormInputs>({
+  const { register, handleSubmit, setValue, control, formState: { errors } } = useForm<FormInputs>({
     defaultValues: {
       fecha: new Date().toISOString().split('T')[0],
     }
@@ -103,6 +104,37 @@ const CreateFacturaView: React.FC = () => {
     }
   };
 
+  const loadOptions = async (inputValue: string) => {
+    return clientes
+      .filter(c => c.nombre.toLowerCase().includes(inputValue.toLowerCase()))
+      .map(c => ({
+        value: c.id.toString(),
+        label: c.nombre
+      }));
+  };
+
+  const selectStyles = {
+    control: (base: any, state: any) => ({
+      ...base,
+      backgroundColor: 'white',
+      borderColor: state.isFocused ? '#3b82f6' : '#d1d5db',
+      boxShadow: state.isFocused ? '0 0 0 1px #3b82f6' : 'none',
+      '&:hover': {
+        borderColor: '#3b82f6',
+      },
+      borderRadius: '0.5rem',
+      padding: '0px 4px',
+    }),
+    placeholder: (base: any) => ({
+      ...base,
+      color: '#9ca3af',
+    }),
+    singleValue: (base: any) => ({
+      ...base,
+      color: '#374151',
+    }),
+  };
+
   return (
     <div className="p-4 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
@@ -117,28 +149,36 @@ const CreateFacturaView: React.FC = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <Card>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="clienteId">Cliente</Label>
-                <Select 
-                  {...register('clienteId', { required: "El cliente es obligatorio" })}
-                >
-                  <option value="">Seleccione un cliente</option>
-                  {clientes.map(c => (
-                    <option key={c.id} value={c.id}>{c.nombre}</option>
-                  ))}
-                </Select>
-                {errors.clienteId && <span className="text-red-500 text-sm">{errors.clienteId.message}</span>}
-              </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="clienteId">Cliente</Label>
+              <Controller
+                name="clienteId"
+                control={control}
+                rules={{ required: "El cliente es obligatorio" }}
+                render={({ field }) => (
+                  <AsyncSelect
+                    cacheOptions
+                    defaultOptions
+                    loadOptions={loadOptions}
+                    styles={selectStyles}
+                    placeholder="Seleccione un cliente"
+                    value={clientes.find(c => c.id.toString() === field.value) ? { 
+                      value: field.value, 
+                      label: clientes.find(c => c.id.toString() === field.value)?.nombre 
+                    } : null}
+                    onChange={(val: any) => field.onChange(val ? val.value : '')}
+                    isClearable
+                  />
+                )}
+              />
+              {errors.clienteId && <span className="text-red-500 text-sm">{errors.clienteId.message}</span>}
             </div>
-            <div>
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="fecha">Fecha</Label>
-                <TextInput 
-                  type="date" 
-                  {...register('fecha')} 
-                />
-              </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="fecha">Fecha</Label>
+              <TextInput 
+                type="date" 
+                {...register('fecha')} 
+              />
             </div>
           </div>
         </Card>
