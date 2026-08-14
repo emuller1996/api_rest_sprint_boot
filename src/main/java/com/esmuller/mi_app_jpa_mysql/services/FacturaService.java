@@ -92,7 +92,7 @@ public class FacturaService {
         // 3. Crear la factura
         String numeroFactura = generarNumeroFactura();
         Factura factura = new Factura(cliente, numeroFactura);
-        factura.setEstado("PENDIENTE");
+        factura.setEstado(request.getEstado());
 
         // 4. Procesar cada detalle
         for (DetalleFacturaRequestDTO detalleRequest : request.getDetalles()) {

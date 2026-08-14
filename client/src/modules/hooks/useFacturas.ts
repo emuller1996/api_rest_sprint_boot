@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
-import { Facturas, FacturasFilters } from "../facturas/types/facturas.types";
+import { Facturas, FacturasFilters, FacturaCreateRequest } from "../facturas/types/facturas.types";
 import { productService } from "../productos/services/product.service";
 import { facturasService } from "../facturas/services/facturas.service";
+import { clienteService } from "../clientes/services/cliente.service";
+import { Cliente } from "../clientes/types/cliente.types";
 
 interface UseFacturasReturn {
   facturas: Facturas[];
+  clientes: Cliente[];
   pagination: {
     currentPage: number;
     pageSize: number;
@@ -20,6 +23,8 @@ interface UseFacturasReturn {
   setFilters: (filters: FacturasFilters) => void;
 
   refreshFacturas: () => Promise<void>;
+  createFactura: (data: FacturaCreateRequest) => Promise<{ success: boolean; message: string }>;
+  fetchClientes: () => Promise<void>;
 }
 
 export const useFacturas = (
@@ -36,12 +41,14 @@ export const useFacturas = (
     empty: true,
   });
   const [loading, setLoading] = useState<boolean>(true);
+  const [isCreating, setIsCreating] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<FacturasFilters>({
     page: 0,
     size: 10,
     ...initialFilters,
   });
+  const [clientes, setClientes] = useState<Cliente[]>([]);
 
   const fetchFacturas = useCallback(async () => {
     try {
@@ -74,6 +81,30 @@ export const useFacturas = (
     await fetchFacturas();
   }, [fetchFacturas]);
 
+  const fetchClientes = useCallback(async () => {
+    try {
+      const data = await clienteService.getAllClientes();
+      setClientes(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al cargar clientes");
+    }
+  }, []);
+
+  const createFactura = useCallback(async (data: FacturaCreateRequest) => {
+    try {
+      setIsCreating(true);
+      await facturasService.createFactura(data);
+      await refreshFacturas();
+      return { success: true, message: "Factura creada exitosamente" };
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Error al crear factura";
+      setError(msg);
+      return { success: false, message: msg };
+    } finally {
+      setIsCreating(false);
+    }
+  }, [refreshFacturas]);
+
 
   useEffect(() => {
       fetchFacturas();
@@ -88,11 +119,14 @@ export const useFacturas = (
 
   return {
     facturas,
+    clientes,
     pagination,
     loading,
     error,
     filters,
     setFilters: handleSetFilters,
     refreshFacturas,
+    createFactura,
+    fetchClientes,
   };
 };

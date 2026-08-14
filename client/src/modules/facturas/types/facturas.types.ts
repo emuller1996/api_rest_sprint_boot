@@ -22,3 +22,16 @@ export interface FacturasFilters {
   page?: number;
   size?: number;
 }
+
+export interface FacturaItem {
+  productoId: number;
+  cantidad: number;
+  precio: number;
+  nombreProducto?: string; // Para visualización en la tabla
+}
+
+export interface FacturaCreateRequest {
+  clienteId: number;
+  detalles: FacturaItem[];
+  estado?: string;
+}

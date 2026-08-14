@@ -19,6 +19,7 @@ import {
 import ListProductos from "../modules/productos/views/list";
 import ClientePage from "../modules/clientes/views/list";
 import ListFacturas from "../modules/facturas/views/list";
+import CreateFacturaView from "../modules/facturas/views/create";
 
 // Componente para el Sidebar Item
 const SidebarItem = ({ to, icon: Icon, label, active, onClick }: any) => (
@@ -106,7 +107,7 @@ export function Dashboard() {
     { to: "/dashboard", icon: HiHome, label: "Dashboard" },
     { to: "/productos", icon: HiShoppingBag, label: "Productos" },
     { to: "/clientes", icon: HiUsers, label: "Clientes" },
-    { to: "/ventas", icon: HiClipboardList, label: "Ventas" },
+    { to: "/facturas", icon: HiClipboardList, label: "Facturas" },
   ];
 
   const handleItemClick = (to: string) => {
@@ -226,8 +227,8 @@ export function Dashboard() {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/productos" element={<ListProductos />} />
               <Route path="/clientes" element={<ClientePage />} />
-              <Route path="/ventas" element={<ListFacturas/>
-              } />
+              <Route path="/facturas" element={<ListFacturas/>} />
+              <Route path="/facturas/nuevo" element={<CreateFacturaView />} />
             </Routes>
           </div>
         </main>
