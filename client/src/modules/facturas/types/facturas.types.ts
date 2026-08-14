@@ -33,5 +33,5 @@ export interface FacturaItem {
 export interface FacturaCreateRequest {
   clienteId: number;
   detalles: FacturaItem[];
-  fecha?: string;
+  estado?: string;
 }
