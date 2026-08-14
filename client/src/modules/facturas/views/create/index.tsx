@@ -102,10 +102,6 @@ const CreateFacturaView: React.FC = () => {
       detalles: items,
     };
 
-    console.log(request);
-    
-    return false;
-
     const result = await createFactura(request);
     if (result.success) {
       toast.success(result.message);

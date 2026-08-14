@@ -5,6 +5,7 @@ import java.util.List;
 public class FacturaRequestDTO {
     private Long clienteId;
     private List<DetalleFacturaRequestDTO> detalles;
+    private String estado;
 
     // Getters y Setters
     public Long getClienteId() { return clienteId; }
@@ -12,6 +13,9 @@ public class FacturaRequestDTO {
 
     public List<DetalleFacturaRequestDTO> getDetalles() { return detalles; }
     public void setDetalles(List<DetalleFacturaRequestDTO> detalles) { this.detalles = detalles; }
+
+    public String getEstado() { return this.estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
 }
 
